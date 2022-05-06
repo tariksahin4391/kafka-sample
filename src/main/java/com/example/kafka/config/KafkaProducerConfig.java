@@ -1,6 +1,6 @@
 package com.example.kafka.config;
 
-import com.example.kafka.model.KafkaModel;
+import com.example.kafka.model.MessageCover;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +21,7 @@ public class KafkaProducerConfig {
     private String bootstrapAddress;
 
     @Bean
-    public ProducerFactory<String, KafkaModel> producerFactory() {
+    public ProducerFactory<String, MessageCover<?>> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -36,7 +36,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, KafkaModel> kafkaTemplate() {
+    public KafkaTemplate<String, MessageCover<?>> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

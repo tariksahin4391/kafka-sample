@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class KafkaModel {
-    private String messageId;
-    private String message;
-    private KafkaModel2 model;
+@AllArgsConstructor
+public class MessageCover<T> {
+    private List<MessageMetadata> metadataList;
+    private T body;
 }

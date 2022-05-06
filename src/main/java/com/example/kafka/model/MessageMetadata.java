@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KafkaModel {
-    private String messageId;
-    private String message;
-    private KafkaModel2 model;
+public class MessageMetadata {
+    private String key;
+    private String value;
 }

@@ -1,6 +1,6 @@
 package com.example.kafka.config;
 
-import com.example.kafka.model.KafkaModel;
+import com.example.kafka.model.MessageCover;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,7 @@ public class KafkaConsumerConfig {
     private String groupId;
 
     @Bean
-    public ConsumerFactory<String, KafkaModel> consumerFactory() {
+    public ConsumerFactory<String, MessageCover> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -37,12 +37,12 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,10);
         return new DefaultKafkaConsumerFactory<>(props,new StringDeserializer(),
-                new JsonDeserializer<>(KafkaModel.class));
+                new JsonDeserializer<>(MessageCover.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, KafkaModel> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, KafkaModel> factory =
+    public <T> ConcurrentKafkaListenerContainerFactory<String, MessageCover> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, MessageCover> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
