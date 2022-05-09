@@ -21,7 +21,27 @@ public class ConsumerServiceImpl implements ConsumerService {
                                @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                                @Header(KafkaHeaders.OFFSET) int offset,
                                @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String msgKey) {
-        log.info("------received kafka message-------");
+        log.info("------received kafka message from consumer1-------");
+        log.info("offset : "+offset);
+        log.info("partition : "+partition);
+        log.info("key : "+msgKey);
+        LinkedHashMap body = (LinkedHashMap) messageCover.getBody();
+        KafkaModel kafkaModel = new KafkaModel();
+        kafkaModel.setMessage((String)body.get("message"));
+        kafkaModel.setMessageId((String) body.get("messageId"));
+        log.info("messageId : "+kafkaModel.getMessageId());
+        log.info("message : "+kafkaModel.getMessage());
+        if(messageCover.getMetadataList() != null){
+            messageCover.getMetadataList().forEach(m-> log.info("k : "+m.getKey()+" -- v : "+m.getValue()));
+        }
+    }
+
+    @KafkaListener(topics = "mytopic",errorHandler = "consumerErrorHandler")
+    public void consumeMessage2(@Payload MessageCover<?> messageCover,
+                               @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
+                               @Header(KafkaHeaders.OFFSET) int offset,
+                               @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String msgKey) {
+        log.info("------received kafka message from consumer2-------");
         log.info("offset : "+offset);
         log.info("partition : "+partition);
         log.info("key : "+msgKey);
