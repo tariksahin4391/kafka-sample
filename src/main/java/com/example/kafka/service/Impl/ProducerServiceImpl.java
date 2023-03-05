@@ -43,4 +43,27 @@ public class ProducerServiceImpl implements ProducerService {
             }
         });
     }
+
+    public void sendMessage2(String message) {
+        String msgId = String.valueOf(System.currentTimeMillis());
+        List<MessageMetadata> metadataList = new ArrayList<>();
+        metadataList.add(new MessageMetadata("msgId",msgId));
+        MessageCover<KafkaModel> newMessage = new MessageCover<>();
+        newMessage.setMetadataList(metadataList);
+        KafkaModel2 m2 = new KafkaModel2();
+        m2.setLongVal(3L);
+        m2.setStrVal("str val");
+        newMessage.setBody(new KafkaModel(msgId,message,m2));
+        kafkaTemplate.send("mytopic2",msgId,newMessage).addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onFailure(Throwable ex) {
+                log.error("message error : " + message, ex);
+            }
+
+            @Override
+            public void onSuccess(SendResult<String, MessageCover<?>> result) {
+                log.info("message sent." + message + " - " + result.getRecordMetadata().partition() + "-" + result.getRecordMetadata().offset());
+            }
+        });
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class KafkaConsumerConfig {
     private String groupId;
 
     @Bean
-    public ConsumerFactory<String, MessageCover> consumerFactory() {
+    public ConsumerFactory<String, MessageCover<?>> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -36,15 +37,19 @@ public class KafkaConsumerConfig {
                 groupId);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG,10);
+        //props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,false);
         return new DefaultKafkaConsumerFactory<>(props,new StringDeserializer(),
                 new JsonDeserializer<>(MessageCover.class));
     }
 
     @Bean
-    public <T> ConcurrentKafkaListenerContainerFactory<String, MessageCover> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, MessageCover> factory =
+    public <T> ConcurrentKafkaListenerContainerFactory<String, MessageCover<?>> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, MessageCover<?>> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        //to disable auto commit
+        //factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+        //factory.getContainerProperties().setSyncCommits(false);
         return factory;
     }
 

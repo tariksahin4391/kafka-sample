@@ -20,4 +20,10 @@ public class MessageController {
         producerService.sendMessage(msg);
         return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
+
+    @GetMapping("/send-message2/{msg}")
+    public ResponseEntity<String> sendMessage2(@PathVariable("msg") String msg){
+        producerService.sendMessage2(msg);
+        return ResponseEntity.status(HttpStatus.OK).body("OK");
+    }
 }
